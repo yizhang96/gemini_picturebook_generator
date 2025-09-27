@@ -16,10 +16,12 @@ from datetime import datetime
 try:
     from weasyprint import HTML, CSS
     WEASYPRINT_AVAILABLE = True
-except ImportError:
+    WEASYPRINT_IMPORT_ERROR = None
+except (ImportError, OSError) as weasyprint_error:
     HTML = None
     CSS = None
     WEASYPRINT_AVAILABLE = False
+    WEASYPRINT_IMPORT_ERROR = weasyprint_error
 
 
 def create_print_optimized_html(story_data, output_dir):
@@ -377,8 +379,10 @@ def create_enhanced_pdf(story_data, output_dir):
         str: Path to PDF file or None if failed
     """
     if not WEASYPRINT_AVAILABLE:
-        print("⚠️  WeasyPrint not available. PDF generation skipped.")
-        print("   Install with: pip install weasyprint")
+        print("⚠️  WeasyPrint system libraries are missing, so PDF generation is skipped.")
+        print("   Install the OS dependencies listed in the README, then run: uv pip install weasyprint")
+        if WEASYPRINT_IMPORT_ERROR is not None:
+            print(f"   Import error: {WEASYPRINT_IMPORT_ERROR}")
         return None
 
     try:
