@@ -25,8 +25,12 @@ from PIL import Image
 try:
     from weasyprint import CSS, HTML
     WEASYPRINT_AVAILABLE = True
-except ImportError:
+    WEASYPRINT_IMPORT_ERROR = None
+except (ImportError, OSError) as weasyprint_error:
+    CSS = None
+    HTML = None
     WEASYPRINT_AVAILABLE = False
+    WEASYPRINT_IMPORT_ERROR = weasyprint_error
 
 
 def setup_client():
@@ -422,12 +426,11 @@ def create_pdf_from_html(html_path, output_dir):
         str: Path to PDF file or None if failed
     """
     if not WEASYPRINT_AVAILABLE:
-        print("⚠️  WeasyPrint not available. PDF generation skipped.")
-        print("   Install with: uv pip install weasyprint")
+        print("⚠️  WeasyPrint system libraries are missing, so PDF generation is skipped.")
+        print("   Install the OS dependencies listed in the README, then run: uv pip install weasyprint")
+        if WEASYPRINT_IMPORT_ERROR is not None:
+            print(f"   Import error: {WEASYPRINT_IMPORT_ERROR}")
         return None
-
-    # Import here to avoid unbound variable error
-    from weasyprint import CSS, HTML
 
     try:
         html_file = Path(html_path)

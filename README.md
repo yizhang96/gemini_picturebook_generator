@@ -47,6 +47,14 @@ An AI-powered story generator that creates **unlimited** custom picture books wi
 
 ## 🚀 **Quick Start**
 
+### **Option 0: Automated local deployment helper**
+
+```bash
+./deploy_local.sh
+```
+
+This script follows the same steps documented below—installing dependencies with `uv sync`, creating a `.env` file from the template if needed, and reminding you to add your `GOOGLE_API_KEY`. After it completes you can launch the UI with `uv run gemini-picturebook` or use the CLI entry points described later in this section.
+
 ### **Option 1: Claude Desktop Integration (Recommended)**
 
 1. **Install the package:**
@@ -81,6 +89,20 @@ uv run gemini-picturebook
 ```bash
 uv run python -m gemini_picturebook_generator.enhanced_story_generator
 ```
+
+### **Optional: Enable PDF export (WeasyPrint system libraries)**
+WeasyPrint needs native libraries for font rendering. If you only plan to download HTML, you can skip this step—PDF generation will simply be disabled with a warning. To enable PDF exports:
+
+- **macOS (Homebrew):**
+  ```bash
+  brew install cairo pango gdk-pixbuf libffi
+  ```
+- **Ubuntu/Debian:**
+  ```bash
+  sudo apt-get install libcairo2 libpango-1.0-0 libgdk-pixbuf2.0-0 libffi-dev
+  ```
+
+After installing the system packages, run `uv pip install weasyprint` (or `uv sync`) again so the Python bindings can link against them.
 
 ## 🤖 **Claude Desktop MCP Integration**
 
